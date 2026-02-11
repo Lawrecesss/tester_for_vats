@@ -60,7 +60,7 @@ export default function VideoUpload() {
 
     try {
       setStatus('Uploading...');
-      const { jobId, modelId, video, metadata } = await client.uploadVideo(file, { caption: 'this is about football match between Arsenal vs Chelsea, Arsenal COYG' , tags: ['COYG', 'Arsenal', 'football'] });
+      const { jobId, modelId, video, metadata } = await client.uploadVideo(file);
       console.log("Uploaded, job ID:", jobId);
       console.log("Model ID:", modelId);
       console.log("Video filename:", video);
