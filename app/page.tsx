@@ -7,6 +7,8 @@ export default function VideoUpload() {
   const [status, setStatus] = useState<string>('...');
   const [result, setResult] = useState<ProcessResult>();
   const [client, setClient] = useState<VideoAnalyzer | null>(null);
+  const [prompt, setPrompt] = useState<string>("");
+  const [tags, setTags] = useState<string[]>([]);
 
   // Initialize client once
   useEffect(() => {
@@ -16,7 +18,7 @@ export default function VideoUpload() {
           "https://videoanalysis-kcot.onrender.com",
           undefined,
           "nvidia/nemotron-nano-12b-v2-vl:free",
-          `Analyze the provided video and determine the best categories that represents its primary content.
+          `By default, Analyze the provided video and determine the best categories that represents its primary content.
           The video must be classified into one or more of the following categories:
           - Sports
           - Music
@@ -40,7 +42,8 @@ export default function VideoUpload() {
           - Animals
           - Politics
           Base your decision on the main theme, subject matter, and overall focus of the video rather than minor or background elements.
-          Return ONLY one or more the category name with comma separated as the final answer.`,
+          Return ONLY one or more the category name with comma separated as the final answer.
+          If additional context like caption and tags are provided, incorporate that into your analysis to refine the categorization and answer accordingly.`,
 );
 
         setClient(analyzer);
@@ -60,7 +63,10 @@ export default function VideoUpload() {
 
     try {
       setStatus('Uploading...');
-      const { jobId, modelId, video, metadata } = await client.uploadVideo(file);
+      const { jobId, modelId, video, metadata } = await client.uploadVideo(file, {
+        caption: prompt,
+        tags: tags,
+      });
       console.log("Uploaded, job ID:", jobId);
       console.log("Model ID:", modelId);
       console.log("Video filename:", video);
@@ -131,7 +137,28 @@ export default function VideoUpload() {
                   </p>
                 </div>
               )}
-
+              {/* Prompt Input */}
+              <div>
+                <input
+                  type="text"
+                  title="prompt"
+                  value={prompt}
+                  onChange={(e) => setPrompt(e.target.value)}
+                  placeholder="Prompt"
+                  className="w-full p-4 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
+                />
+              </div>
+              {/* Tags Input */}
+              <div>
+                <input
+                  type="text"
+                  title="tags"
+                  value={tags.join(', ')}
+                  onChange={(e) => setTags(e.target.value.split(',').map(tag => tag.trim()))}
+                  placeholder="Tags (comma separated)"
+                  className="w-full p-4 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
+                />
+              </div>
               {/* Status */}
               <div className={`rounded-lg p-4 ${status.includes('failed') ? 'bg-red-50 border border-red-200' : status.includes('completed') ? 'bg-green-50 border border-green-200' : 'bg-blue-50 border border-blue-200'}`}>
                 <p className={status.includes('failed') ? 'text-red-700' : status.includes('completed') ? 'text-green-700' : 'text-blue-700'}>
