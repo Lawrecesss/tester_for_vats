@@ -72,7 +72,7 @@ export default function VideoUpload() {
       console.log("Video filename:", video);
       console.log("Metadata:", metadata);
       setStatus('Waiting for result...');
-      const res = await client.getResult(jobId);
+      const res = await client.getResult(jobId, "categories");
       setResult(res);
       setStatus('Processing completed');
     } catch (err) {
