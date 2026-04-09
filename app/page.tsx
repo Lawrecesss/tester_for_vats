@@ -19,7 +19,7 @@ export default function VideoUpload() {
           undefined,
           "nvidia/nemotron-nano-12b-v2-vl:free",
           `By default, Analyze the provided video and determine the best categories that represents its primary content.
-          The video must be classified into one or more of the following categories:
+          The video must be classified into one or more of the followietResultng categories:
           - Sports
           - Music
           - Education
@@ -63,16 +63,17 @@ export default function VideoUpload() {
 
     try {
       setStatus('Uploading...');
-      const { jobId, modelId, video, metadata } = await client.uploadVideo(file, {
+      const { jobId, video, metadata } = await client.uploadVideo(file, {
         caption: prompt,
         tags: tags,
       });
       console.log("Uploaded, job ID:", jobId);
-      console.log("Model ID:", modelId);
+      // console.log("Model ID:", modelId);
       console.log("Video filename:", video);
       console.log("Metadata:", metadata);
       setStatus('Waiting for result...');
-      const res = await client.getResult(jobId, "categories");
+      const res = await client.getCategories(jobId);
+      console.log("Received result:", res);
       setResult(res);
       setStatus('Processing completed');
     } catch (err) {
