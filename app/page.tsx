@@ -170,7 +170,7 @@ export default function VideoUpload() {
               {/* Upload Button */}
               <button
                 onClick={handleUpload}
-                disabled={!file || ! client}
+                disabled={!file || ! client || status === 'Uploading...' || status === 'Waiting for result...'}
                 className="w-full px-6 py-3 bg-linear-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
               >
                 {client? (status === 'Uploading...' ? 'Processing...' : 'Analyze Video') : 'Waking up AI...'}
